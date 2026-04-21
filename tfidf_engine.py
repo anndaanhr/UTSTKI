@@ -337,9 +337,12 @@ class TFIDFSearchEngine:
     def get_idf_values(self):
         """
         Mengembalikan nilai IDF untuk setiap term sebagai dict.
+        Diurutkan berdasarkan kata yang paling sering muncul di berbagai dokumen.
         """
-        sorted_idf = sorted(self.idf_values.items(), key=lambda x: x[1], reverse=True)
-        return {term: round(val, 4) for term, val in sorted_idf[:50]}
+        df_dict = compute_df(self.tokenized_docs)
+        # Sort berdasarkan jumlah dokumen tempat term muncul (DF) dari yang terbanyak
+        sorted_df = sorted(df_dict.items(), key=lambda x: x[1], reverse=True)
+        return {term: round(self.idf_values[term], 4) for term, _ in sorted_df[:50]}
 
     def get_tfidf_matrix(self):
         """
