@@ -328,7 +328,7 @@ class TFIDFSearchEngine:
             tf = compute_tf(tokens)
             tf_data.append(tf)
 
-        df = pd.DataFrame(tf_data, index=[f"Doc {d['id']}" for d in self.documents])
+        df = pd.DataFrame(tf_data, index=[f"Doc {d['id']:02d}" for d in self.documents])
         df = df.fillna(0)
         # Ambil top terms berdasarkan rata-rata TF
         top_terms = df.mean().nlargest(30).index.tolist()
@@ -348,7 +348,7 @@ class TFIDFSearchEngine:
         """
         Mengembalikan matriks TF-IDF sebagai pandas DataFrame.
         """
-        df = pd.DataFrame(self.tfidf_manual, index=[f"Doc {d['id']}" for d in self.documents])
+        df = pd.DataFrame(self.tfidf_manual, index=[f"Doc {d['id']:02d}" for d in self.documents])
         df = df.fillna(0)
         # Ambil top terms berdasarkan rata-rata TF-IDF
         top_terms = df.mean().nlargest(30).index.tolist()
