@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TF-IDF Information Retrieval System</title>
+    <meta name="description" content="Sistem Pencarian Informasi menggunakan algoritma TF-IDF dan Cosine Similarity">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- ===== NOISE TEXTURE OVERLAY ===== -->
+    <div class="noise"></div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="brand">
+                <span class="brand-mark">IR</span>
+                <div class="brand-text">
+                    <span class="brand-name">SearchLab</span>
+                    <span class="brand-tag">TF-IDF Engine v1.0</span>
+                </div>
+            </a>
+            <nav class="nav" id="main-nav">
+                <button class="nav-item active" data-tab="search" id="tab-search">
+                    <span class="nav-dot"></span>Pencarian
+                </button>
+                <button class="nav-item" data-tab="documents" id="tab-documents">
+                    <span class="nav-dot"></span>Korpus
+                </button>
+                <button class="nav-item" data-tab="matrix" id="tab-matrix">
+                    <span class="nav-dot"></span>Matriks
+                </button>
+            </nav>
+            <div class="header-meta">
+                <span class="meta-pill"><span class="pulse"></span> Live</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== HERO / STATS ===== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-left">
+                <h1 class="hero-title">
+                    Information<br>
+                    <span class="hero-outline">Retrieval</span><br>
+                    <span class="hero-accent">System</span>
+                </h1>
+                <p class="hero-desc">Pencarian dokumen berbasis TF-IDF &amp; Cosine Similarity dengan perbandingan implementasi manual vs scikit-learn.</p>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-num" id="stat-docs">15</span>
+                    <span class="hero-stat-label">Dokumen</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num" id="stat-tokens">—</span>
+                    <span class="hero-stat-label">Token</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num" id="stat-vocab">—</span>
+                    <span class="hero-stat-label">Vocabulary</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num" id="stat-avg">—</span>
+                    <span class="hero-stat-label">Avg Length</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-line"></div>
+    </section>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main">
+        <div class="container">
+
+            <!-- ====== SEARCH TAB ====== -->
+            <div class="tab-panel active" id="content-search">
+                <!-- Search Bar -->
+                <div class="search-wrap">
+                    <div class="search-bar" id="search-bar">
+                        <span class="search-label">QUERY</span>
+                        <input type="text" id="search-input" placeholder="kecerdasan buatan, mobil listrik, serangan siber..." autocomplete="off" spellcheck="false">
+                        <div class="search-right">
+                            <div class="topk-wrap">
+                                <span class="topk-lbl">K</span>
+                                <select id="topk-select">
+                                    <option value="3">3</option>
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                </select>
+                            </div>
+                            <button class="btn-go" id="btn-search">Cari →</button>
+                        </div>
+                    </div>
+                    <div class="chips">
+                        <button class="chip" onclick="quickSearch('kecerdasan buatan')">kecerdasan buatan</button>
+                        <button class="chip" onclick="quickSearch('mobil listrik Indonesia')">mobil listrik</button>
+                        <button class="chip" onclick="quickSearch('serangan siber keamanan data')">serangan siber</button>
+                        <button class="chip" onclick="quickSearch('Elon Musk SpaceX')">Elon Musk</button>
+                        <button class="chip" onclick="quickSearch('internet satelit Starlink')">internet satelit</button>
+                        <button class="chip" onclick="quickSearch('cryptocurrency bitcoin')">bitcoin</button>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="intro-card" id="empty-state">
+                    <div class="intro-grid">
+                        <div class="intro-step">
+                            <span class="intro-num">01</span>
+                            <h3>Masukkan Query</h3>
+                            <p>Ketik kata kunci pencarian di search bar</p>
+                        </div>
+                        <div class="intro-step">
+                            <span class="intro-num">02</span>
+                            <h3>TF-IDF Processing</h3>
+                            <p>Sistem menghitung TF, IDF, dan TF-IDF score</p>
+                        </div>
+                        <div class="intro-step">
+                            <span class="intro-num">03</span>
+                            <h3>Cosine Similarity</h3>
+                            <p>Menghitung kemiripan query dengan setiap dokumen</p>
+                        </div>
+                        <div class="intro-step">
+                            <span class="intro-num">04</span>
+                            <h3>Ranked Results</h3>
+                            <p>Dokumen diurutkan berdasarkan skor relevansi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="results-wrap" id="results-area" style="display:none;">
+                    <div class="results-meta">
+                        <div class="results-query">
+                            <span class="results-label">QUERY</span>
+                            <h2 id="results-title"></h2>
+                        </div>
+                        <div class="results-tokens" id="query-tokens-badge"></div>
+                    </div>
+
+                    <div class="results-duo">
+                        <div class="results-col">
+                            <div class="col-label manual-label">
+                                <span class="method-dot manual-dot"></span>
+                                Manual Implementation
+                            </div>
+                            <div class="col-sub">TF × IDF → Cosine Similarity (from scratch)</div>
+                            <div id="results-manual"></div>
+                        </div>
+                        <div class="results-col">
+                            <div class="col-label sklearn-label">
+                                <span class="method-dot sklearn-dot"></span>
+                                Scikit-learn
+                            </div>
+                            <div class="col-sub">TfidfVectorizer → cosine_similarity</div>
+                            <div id="results-sklearn"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== DOCUMENTS TAB ====== -->
+            <div class="tab-panel" id="content-documents">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-label">KORPUS</span>
+                        <h2 class="panel-title">Koleksi Dokumen</h2>
+                    </div>
+                    <p class="panel-desc">15 artikel berita teknologi viral — Bahasa Indonesia</p>
+                </div>
+                <div class="doc-list" id="documents-grid"></div>
+            </div>
+
+            <!-- ====== MATRIX TAB ====== -->
+            <div class="tab-panel" id="content-matrix">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-label">ANALISIS</span>
+                        <h2 class="panel-title">Matriks TF-IDF</h2>
+                    </div>
+                    <div class="matrix-switcher">
+                        <button class="msw-btn active" data-matrix="tfidf" id="mtab-tfidf">TF-IDF</button>
+                        <button class="msw-btn" data-matrix="tf" id="mtab-tf">TF</button>
+                        <button class="msw-btn" data-matrix="idf" id="mtab-idf">IDF</button>
+                    </div>
+                </div>
+                <div class="matrix-box" id="matrix-container">
+                    <div class="loader"><div class="loader-bar"></div></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== MODAL ===== -->
+    <div class="overlay" id="modal-overlay">
+        <div class="modal" id="doc-modal">
+            <button class="modal-x" id="modal-close">✕</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>© 2025 SearchLab — UTS Temu Kembali Informasi</span>
+            <span class="footer-tech">Python · scikit-learn · NumPy · Pandas · Flask</span>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
