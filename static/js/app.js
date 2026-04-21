@@ -1,7 +1,3 @@
-// =============================================================================
-// SearchLab — TF-IDF IR System Frontend
-// =============================================================================
-
 document.addEventListener('DOMContentLoaded', () => {
     loadStats();
     loadDocuments();
@@ -11,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupMatrixTabs();
 });
 
-// ─── Tab Navigation ───
 function setupTabs() {
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -34,7 +29,6 @@ function setupMatrixTabs() {
     });
 }
 
-// ─── Stats ───
 async function loadStats() {
     try {
         const r = await fetch('/api/stats');
@@ -60,7 +54,6 @@ function animateNum(id, target) {
     requestAnimationFrame(tick);
 }
 
-// ─── Search ───
 function setupSearch() {
     document.getElementById('btn-search').addEventListener('click', doSearch);
     document.getElementById('search-input').addEventListener('keydown', e => {
@@ -130,7 +123,6 @@ function renderResults(id, results, method) {
     }).join('');
 }
 
-// ─── Documents ───
 async function loadDocuments() {
     try {
         const res = await fetch('/api/documents');
@@ -152,7 +144,6 @@ async function loadDocuments() {
     } catch (e) { console.error(e); }
 }
 
-// ─── Modal ───
 function setupModal() {
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-overlay').addEventListener('click', e => {
@@ -198,7 +189,6 @@ async function showDoc(docId) {
 
 function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
 
-// ─── Matrix ───
 let mCache = null;
 async function loadMatrix(type) {
     const box = document.getElementById('matrix-container');
@@ -251,6 +241,5 @@ function renderIdf(data) {
     box.innerHTML = h;
 }
 
-// ─── Helpers ───
 function loading() { return '<div class="loader"><div class="loader-bar"></div></div>'; }
 function errMsg() { return '<div class="no-results">Terjadi kesalahan</div>'; }

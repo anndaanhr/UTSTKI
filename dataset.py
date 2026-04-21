@@ -1,9 +1,3 @@
-# =============================================================================
-# Dataset: 15 Dokumen Berita Teknologi Viral (Bahasa Indonesia)
-# Topik: Berita teknologi yang sedang viral dan trending
-# Panjang dokumen bervariasi untuk menunjukkan efektivitas TF-IDF
-# =============================================================================
-
 DOCUMENTS = [
     {
         "id": 1,
